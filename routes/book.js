@@ -156,7 +156,7 @@ router.get('/list', (req, res) => {
       result.map(item => handleData(item));
       const data = {};
       staticRes.category.forEach(categoryText => {
-        data[categoryText] = result.filter(item => item.categoryText === categoryText)
+        data[categoryText] = result.filter(item => item.categoryText === categoryText);
       });
       res.json({
         error_code: 0,
@@ -165,6 +165,34 @@ router.get('/list', (req, res) => {
       });
     }
     connection.end();
+  })
+});
+router.get('/flat-list', (req, res) => {
+  const connection = database.createConnection();
+  const sql = `select * from book where cover!='';`;
+  connection.query(sql, (error, result) => {
+    if (error) {
+      res.json({
+        error_code: 1,
+        msg: '数据库查询失败'
+      });
+    } else {
+      result.map(item => handleData(item));
+      res.json({
+        error_code: 0,
+        result,
+        total: result.length
+      });
+    }
+    connection.end();
+  })
+});
+router.get('/shelf', (req, res) => {
+  res.json({
+    error_code: 0,
+    data: {
+      bookList: []
+    }
   })
 });
 
